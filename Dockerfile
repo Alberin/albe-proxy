@@ -1,7 +1,14 @@
-FROM serjs/go-3proxy
+FROM ubuntu:20.04
 
-COPY 3proxy.cfg /etc/3proxy/3proxy.cfg
+ENV DEBIAN_FRONTEND=noninteractive
 
-EXPOSE 3128 1080
+RUN apt-get update && \
+    apt-get install -y squid && \
+    mkdir -p /var/log/squid && \
+    touch /var/log/squid/access.log
 
-CMD ["3proxy", "/etc/3proxy/3proxy.cfg"]
+COPY squid.conf /etc/squid/squid.conf
+
+EXPOSE 3128
+
+CMD ["squid", "-N", "-f", "/etc/squid/squid.conf"]
