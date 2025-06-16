@@ -3,16 +3,17 @@ FROM ubuntu:20.04
 # Éviter les prompts interactifs
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Installer squid
 RUN apt-get update && \
     apt-get install -y squid && \
     mkdir -p /var/log/squid && \
-    touch /var/log/squid/access.log
+    chown -R proxy:proxy /var/log/squid
 
-# Copier notre fichier de configuration personnalisé
+# Copier le fichier de configuration
 COPY squid.conf /etc/squid/squid.conf
 
-# Exposer le port du proxy
+# Exposer le port 3128
 EXPOSE 3128
 
-# Lancer squid en mode foreground
+# Lancer Squid en foreground (nécessaire pour Docker)
 CMD ["squid", "-N", "-d", "1"]
