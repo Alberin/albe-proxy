@@ -1,5 +1,6 @@
 FROM ubuntu:20.04
 
+# Éviter les prompts interactifs
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
@@ -7,8 +8,11 @@ RUN apt-get update && \
     mkdir -p /var/log/squid && \
     touch /var/log/squid/access.log
 
+# Copier notre fichier de configuration personnalisé
 COPY squid.conf /etc/squid/squid.conf
 
+# Exposer le port du proxy
 EXPOSE 3128
 
-CMD ["squid", "-N", "-f", "/etc/squid/squid.conf"]
+# Lancer squid en mode foreground
+CMD ["squid", "-N", "-d", "1"]
